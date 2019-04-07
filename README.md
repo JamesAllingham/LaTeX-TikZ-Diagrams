@@ -1,4 +1,4 @@
-# LaTeX-Tikz-Diagrams
+# LaTeX-TikZ-Diagrams
 Here you can find (just about) all of the diagrams I've ever made in LaTeX using TikZ (and Pgfplots) [WIP].
 
 This is more for my reference than anything, and might not be useful for anyone else at all, but I learned to make these diagrams from example so maybe these will help someone doing the same thing. 
