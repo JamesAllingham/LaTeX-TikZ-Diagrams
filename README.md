@@ -22,7 +22,28 @@ Since my earlier work is generally of poorer quality, I'm organizing the diagram
 
 | Diagram | Category | Year | Rating |
 |---|---|---|---|
-|[Weight Sharing in CNNs](2019/Neural%20Networks/Weight%20Sharing%20in%20CNNs/)|Neural Networks|2019|&#9733;&#9733;&#9733;|
+|[Autoencoder](2019/Neural%20Networks/Autoencoder/)|Neural Networks|2019|&#9733;&#9733;&#9733;|
 |[Receptive Fields in CNNs](2019/Neural%20Networks/Receptive%20Fields%20in%20CNNs/)|Neural Networks|2019|&#9733;&#9733;|
+|[Weight Sharing in CNNs](2019/Neural%20Networks/Weight%20Sharing%20in%20CNNs/)|Neural Networks|2019|&#9733;&#9733;&#9733;|
 
+## Diagrams
+
+### Autoencoder
+
+[Source Folder](2019/Neural%20Networks/Autoencoder/)
+
+![Autoencoder](https://i.imgur.com/yj8f5jS.jpg)
+
+### Receptive Fields in CNNs
+
+[Source Folder](2019/Neural%20Networks/Receptive%20Fields%20in%20CNNs/)
+
+![Receptive Fields in CNNs](https://i.imgur.com/462QCx5.png)
+
+
+### Weight Sharing in CNNs
+
+[Source Folder](2019/Neural%20Networks/Weight%20Sharing%20in%20CNNs/)
+
+![Weight Sharing in CNNs](https://i.imgur.com/gcmmZz4.png)
 
