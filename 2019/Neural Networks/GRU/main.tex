@@ -1,0 +1,133 @@
+\documentclass[tikz]{standalone}
+\standaloneconfig{border=1cm} 
+\usepackage[utf8]{inputenc}
+
+\usetikzlibrary{positioning}
+
+\title{GRU}
+\author{James Allingham and Taliesin Beynon}
+\date{May 2019}
+
+\begin{document}
+	
+\def\vec#1{\mathbf{#1}}
+
+\tikzset{nicecolor/.style={draw=#1!50!black, top color=#1!70!black!20!white, bottom color=#1!70!black!20!white}}
+
+% colors
+
+\standaloneconfig{border=0.5ex}
+
+\colorlet{GateColor}{red}
+\colorlet{NonLinearColor}{green}
+\colorlet{OperatorColor}{blue}
+\colorlet{FrameColor}{gray!10!white}
+
+% internal node shape
+
+\tikzset{opnode/.style={circle, minimum width=5ex}}
+\tikzset{sigma/.style={opnode, nicecolor=NonLinearColor, font={$\sigma$}}}
+\tikzset{tanh/.style={opnode, nicecolor=NonLinearColor, label=center:{\small tanh}}}
+\tikzset{plus/.style ={opnode, nicecolor=OperatorColor, font={$+$}}}
+\tikzset{times/.style={opnode, nicecolor=OperatorColor, font={$\times$}}}
+\tikzset{oneminus/.style ={opnode, nicecolor=OperatorColor, label=center:{\small{$-1$}}}}
+
+% gate shape
+
+\tikzset{gate/.style={rectangle, minimum width=18ex, minimum height=0.6cm, nicecolor=GateColor, label={center:{\textsc{#1}}}}}
+
+% arrow style
+	
+\tikzset{arrow/.style={-stealth, thick, draw=gray!80!black}}
+
+\begin{tikzpicture}
+%     \draw[help lines](0,-5) grid (10,5);  
+	% overall frame
+	
+	\draw[solid, nicecolor=FrameColor] (-1.25, -1.75) rectangle (7.3, 1.75);
+	
+	\def\narrowdot{\hspace{-0.2ex}\cdot \hspace{-0.2ex}}
+	\def\narrowminus{\hspace{-0.2ex}-\hspace{-0.2ex}}
+	% gates
+	
+	
+	\tikzset{smallgate/.style={minimum width=11ex}};
+	
+	\node[gate={reset}, smallgate] (RG1) {};
+	\node[gate={memory}, smallgate, below=3ex of RG1] [xshift=16ex] (MG1) {}; 
+	\node[gate={input}, smallgate, above=3ex of RG1] (IG1) {}; 
+	
+	% inputs 
+	
+	\node[left=8ex of IG1, yshift=1ex] (X) {$\vec{x}_t$};
+	\node[anchor=east] at (IG1.west |- MG1) [xshift=-8ex, yshift=-1ex] (Y) {$\vec{y}_{t-1}$};
+	
+	% connections between inputs and gates
+	
+	\foreach \dst in {MG1, RG1, IG1} {
+		\draw[arrow] (X.east) -- ([xshift=2ex]X.east) |- ([yshift=1ex]\dst.west);
+		\draw[arrow] (Y.east) -- ([xshift=3.5ex]Y.east) |- ([yshift=-1ex]\dst.west);
+	}
+	
+	% gate non-linearities
+	
+	\node[sigma, right=3ex of IG1] (IG) {}; \draw[arrow] (IG1) -- (IG);
+	\node[tanh, right=3ex of MG1] (MG) {}; \draw[arrow] (MG1) -- (MG);
+	\node[sigma, right=3ex of RG1] (RG) {}; \draw[arrow] (RG1) -- (RG);
+	
+	% reset gate to memory gate
+	
+	\draw[arrow] (RG.east) -| (MG1.north);
+	
+	% mixing ops
+	
+	\node[times, right=3ex of MG] (IP) {}; % inverted product
+	\node[oneminus] at (RG -| IP) (II) {}; % inverted input
+	\node[plus, right=3ex of IP] (ADD) {}; % addition of product and inverted product
+	\node[times] at (IG -| ADD) (P) {}; % product
+	
+	\draw[arrow] (MG) -- (IP);
+	\draw[arrow] (II) -- (IP);
+	\draw[arrow] (IG) -| (II);
+	\draw[arrow] (IG) -- (P) -- (ADD);
+	\draw[arrow] (IP) -- (ADD);
+	
+	% output node and top Y
+	
+	\node[right=of ADD] (Y1) {$\vec{y}_t$} {};
+	\draw[arrow] (ADD.east) -- (Y1.west);
+	
+	\node[above=4ex of P] (Y2) {$\vec{y}_{t-1}$};
+	\draw[arrow] (Y2) -- (P);
+	
+	% input/reset gate inlay 
+	
+	\node[draw=none] (gatetitle) at (0.1, -3.6) {\textsc{input/reset gate}};
+	\node[gate={}, minimum height=4ex, above=0cm of gatetitle.north] (gate) {$W_1 \vec x + W_2 \vec y + \vec b$};
+	
+	\node[] at [left=5ex of gate] [yshift=2ex] (xgate) {$\vec{x}$};
+	\node[] at [left=5ex of gate] [yshift=-2ex] (ygate) {$\vec{y}$};
+	\node[] at [right=3ex of gate] (zgate) {};
+	
+	\draw[arrow] (xgate) -- ([yshift=1ex]gate);
+	\draw[arrow] (ygate) -- ([yshift=1ex]gate);
+	\draw[arrow] (gate) -- (zgate);
+	
+	% memory gate inlay 
+	
+	\node[draw=none] (gatetitle) at (5.65, -3.6) {\textsc{memory gate}};
+	\node[gate={}, minimum height=4ex, above=0cm of gatetitle.north] (gate) {$W_1 \vec x + \vec r \circ W_2 \vec y + \vec b $};
+	
+	\node[] at [left=5ex of gate] [yshift=2ex] (xgate) {$\vec{x}$};
+	\node[] at [left=5ex of gate] [yshift=-2ex] (ygate) {$\vec{y}$};
+	\node[] at [above=2ex of gate] (rgate) {$\vec{r}$};
+	\node[] at [right=3ex of gate] (zgate) {};
+	
+	\draw[arrow] (xgate) -- ([yshift=1ex]gate);
+	\draw[arrow] (ygate) -- ([yshift=1ex]gate);
+	\draw[arrow] (rgate) -- ([yshift=1ex]gate);
+	\draw[arrow] (gate) -- (zgate);
+     
+\end{tikzpicture}
+
+\end{document}

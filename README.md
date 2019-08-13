@@ -23,6 +23,8 @@ Since my earlier work is generally of poorer quality, I'm organizing the diagram
 | Diagram | Category | Year | Rating |
 |---|---|---|---|
 |[Autoencoder](2019/Neural%20Networks/Autoencoder/)|Neural Networks|2019|&#9733;&#9733;&#9733;|
+|[GRU](2019/Neural%20Networks/GRU/)|Neural Networks|2019|&#9733;&#9733;&#9733;|
+|[LSTM](2019/Neural%20Networks/LSTM/)|Neural Networks|2019|&#9733;&#9733;&#9733;|
 |[Receptive Fields in CNNs](2019/Neural%20Networks/Receptive%20Fields%20in%20CNNs/)|Neural Networks|2019|&#9733;&#9733;|
 |[Weight Sharing in CNNs](2019/Neural%20Networks/Weight%20Sharing%20in%20CNNs/)|Neural Networks|2019|&#9733;&#9733;&#9733;|
 
@@ -33,6 +35,18 @@ Since my earlier work is generally of poorer quality, I'm organizing the diagram
 [Source Folder](2019/Neural%20Networks/Autoencoder/)
 
 ![Autoencoder](https://i.imgur.com/yj8f5jS.jpg)
+
+### GRU
+
+[Source Folder](2019/Neural%20Networks/GRU/)
+
+![GRU](https://i.imgur.com/jrI06DF.jpg)
+
+### LSTM
+
+[Source Folder](2019/Neural%20Networks/LSTM/)
+
+![LSTM](https://i.imgur.com/IBFpUBj.jpg)
 
 ### Receptive Fields in CNNs
 

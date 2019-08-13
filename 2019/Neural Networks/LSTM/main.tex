@@ -1,0 +1,117 @@
+\documentclass[tikz]{standalone}
+\standaloneconfig{border=1cm} 
+\usepackage[utf8]{inputenc}
+
+\usetikzlibrary{positioning}
+
+\title{LSTM}
+\author{James Allingham and Taliesin Beynon}
+\date{May 2019}
+
+\begin{document}
+	
+\def\vec#1{\mathbf{#1}}
+
+\tikzset{nicecolor/.style={draw=#1!50!black, top color=#1!70!black!20!white, bottom color=#1!70!black!20!white}}
+
+% colors
+
+\standaloneconfig{border=0.5ex}
+
+\colorlet{GateColor}{red}
+\colorlet{NonLinearColor}{green}
+\colorlet{OperatorColor}{blue}
+\colorlet{FrameColor}{gray!10!white}
+
+% internal node shape
+
+\tikzset{opnode/.style={circle, minimum width=5ex}}
+\tikzset{sigma/.style={opnode, nicecolor=NonLinearColor, font={$\sigma$}}}
+\tikzset{tanh/.style={opnode, nicecolor=NonLinearColor, label=center:{\small tanh}}}
+\tikzset{plus/.style ={opnode, nicecolor=OperatorColor, font={$+$}}}
+\tikzset{times/.style={opnode, nicecolor=OperatorColor, font={$\times$}}}
+
+% gate shape
+
+\tikzset{gate/.style={rectangle, minimum width=18ex, minimum height=0.6cm, nicecolor=GateColor, label={center:{\textsc{#1}}}}}
+
+% arrow style
+	
+\tikzset{arrow/.style={-stealth, thick, draw=gray!80!black}}
+
+\begin{tikzpicture}
+%     \draw[help lines](0,-5) grid (10,5);  
+	% overall frame
+	
+	\draw[solid, nicecolor=FrameColor] (-1.75, -1.5) rectangle (8, 2.5);
+	
+	% gates
+	
+	\node[gate={memory}] (MG1) {};
+	\node[gate={input}, above=2ex of MG1] (IG1) {};
+	\node[gate={forget}, above=2ex of IG1] (FG1) {};
+	\node[gate={output}, below=2ex of MG1] (OG1) {};
+	
+	% inputs 
+	
+	\node[left=8ex of FG1, yshift=1ex] (X) {$\vec{x}_t$};
+	\node[left=8ex of OG1, yshift=-1ex] (Y) {$\vec{y}_{t-1}$};
+	
+	% connections between inputs and gates
+	
+	\foreach \dst in {MG1, IG1, FG1, OG1} {
+		\draw[arrow] (X.east) -- ([xshift=2ex]X.east) |- ([yshift=1ex]\dst.west);
+		\draw[arrow] (Y.east) -- ([xshift=3.5ex]Y.east) |- ([yshift=-1ex]\dst.west);
+	}
+	
+	% gate non-linearities
+	
+	\node[sigma, right=3ex of IG1] (IG) {}; \draw[arrow] (IG1) -- (IG);
+	\node[tanh, right=3ex of MG1] (MG) {}; \draw[arrow] (MG1) -- (MG);
+	\node[sigma, right=3ex of FG1] (FG) {}; \draw[arrow] (FG1) -- (FG);
+	\node[sigma, right=3ex of OG1] (OG) {}; \draw[arrow] (OG1) -- (OG);
+	
+	% internal ops
+	
+	\node[times, right=4ex of MG] (t1) {}; 
+	\node[plus, right=4ex of t1] (pl) {};
+	\node[sigma, right=4ex of pl] (th) {};
+	\node[times] at (OG -| th) [xshift=6ex] (t2) {};
+	\node[times] at (FG -| pl) (t3) {};
+	
+	% final states
+	
+	\node[right=of t2] (Y1) {$\vec{y}_t$} {};
+	\node[above=4ex of t3] (C) {$\vec{c}_{t-1}$};
+	\node[below=1.7 of pl] (C1) {$\vec{c}_t$};
+	
+	% connections between internal ops
+	
+	\draw[arrow] (MG) -- (t1);
+	\draw[arrow] (t1) -- (pl);
+	\draw[arrow] (pl) -- (th);
+	\draw[arrow] (th) -| (t2);
+	\draw[arrow] (t2) -- (Y1);
+	\draw[arrow] (C) -- (t3);
+	\draw[arrow] (t3) -- (pl);
+	\draw[arrow] (IG.east) -| (t1);
+	\draw[arrow] (OG.east) -- (t2);
+	\draw[arrow] (FG.east) -- (t3);
+	\draw[arrow] (pl.south) -- (C1.north);
+	
+	% gate inlay
+	
+	\node[draw=none] (gatetitle) at (0, -3) {\textsc{gate}};
+	\node[gate={}, minimum height=4ex, above=0cm of gatetitle.north] (gate) {$W_1 \vec x + W_2 \vec y + \vec b$};
+	
+	\node[] at [left=5ex of gate] [yshift=2ex] (xgate) {$\vec{x}$};
+	\node[] at [left=5ex of gate] [yshift=-2ex] (ygate) {$\vec{y}$};
+	\node[] at [right=3ex of gate] (zgate) {};
+	
+	\draw[arrow] (xgate) -- ([yshift=1ex]gate);
+	\draw[arrow] (ygate) -- ([yshift=1ex]gate);
+	\draw[arrow] (gate) -- (zgate);
+     
+\end{tikzpicture}
+
+\end{document}
