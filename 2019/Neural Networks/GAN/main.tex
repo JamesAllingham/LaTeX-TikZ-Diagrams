@@ -1,0 +1,40 @@
+\documentclass[tikz]{standalone}
+\standaloneconfig{border=1cm} 
+\usepackage[utf8]{inputenc}
+
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes}
+\usetikzlibrary{calc}
+
+\title{Autoencoder}
+\author{James Allingham}
+\date{August 2019}
+
+\begin{document}
+	
+\tikzset{arrow/.style={-stealth, thick, draw=gray!80!black}}
+
+\begin{tikzpicture}[ampersand replacement=\&]
+%     \draw[help lines](0,-5) grid (10,5);  
+     
+   	\node[text width=1.75cm] at (-3,0) (Z) {\textsc{Random Noise ($ \mathbf{z} $)}};		 
+    \node[rectangle, rounded corners, draw, fill=blue!20, minimum height=1cm] at (0,0) (G) {\textsc{Generator}};	
+    \node[rectangle, rounded corners, draw, fill=cyan!20, minimum height=1cm] at (3,0) (S1) {\textsc{Sample}};
+    
+    \node[text width=1.75cm] at (0.5,3) (X) {\textsc{Training Data ($ \mathbf{x} $)}};		 
+    \node[rectangle, rounded corners, draw, fill=cyan!20, minimum height=1cm] at (3,3) (S2) {\textsc{Sample}};
+    
+    \node[rectangle, rounded corners, draw, fill=red!20, minimum height=1cm] at (6,1.5) (D) {\textsc{Discriminator}};
+    
+    \node[text width=2cm] at (10,1.5) (O) {\textsc{Real/Fake Prediction}};
+     
+    \path[arrow] (Z) edge (G)
+    (G) edge (S1)
+    (S1) edge (D.south west)
+    (X) edge (S2)
+    (S2) edge (D.north west)  
+    (D) edge (O)
+    ;
+\end{tikzpicture}
+
+\end{document}
