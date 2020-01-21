@@ -1,3 +1,10 @@
+## Don't include intermediate JPG/PNG files
+main.JPG
+main.jpg
+main.jpeg
+main.PNG
+main.png
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
