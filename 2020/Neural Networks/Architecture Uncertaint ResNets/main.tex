@@ -1,0 +1,102 @@
+\documentclass[tikz]{standalone}
+\standaloneconfig{border=1cm} 
+\usepackage[utf8]{inputenc}
+
+\usetikzlibrary{positioning}
+
+\title{Architecture Uncertain ResNet}
+\author{James Allingham}
+\date{Jan 2020}
+
+\begin{document}
+	
+\def\vec#1{\mathbf{#1}}
+
+\tikzset{nicecolor/.style={draw=#1!50!black, top color=#1!70!black!20!white, bottom color=#1!70!black!20!white}}
+
+\standaloneconfig{border=0.5ex}
+
+% internal node shape
+
+\tikzset{opnode/.style={circle, minimum width=3ex}}
+\tikzset{plus/.style ={opnode, nicecolor=blue, font={$+$}}}
+\tikzset{times/.style={opnode, nicecolor=blue, font={$\times$}}}
+
+% NN block shape
+
+\tikzset{block/.style={rectangle, text width=9ex, align=center, minimum height=1cm, nicecolor=red, font=\scshape, rounded corners}}
+
+% line styles
+	
+\tikzset{line/.style={thick, draw=gray!80!black}}
+\tikzset{arrow/.style={-stealth,line}}
+
+\begin{tikzpicture}
+	% NN Blocks
+	\node[block] (IB) {Input Block};
+	\node[block, above right=7ex and 4ex of IB] (RB1) {Res Block};
+	\node[block, right=20ex of RB1] (RB2) {Res Block};
+	\node[block, right=20ex of RB2] (RB3) {Res Block};
+	\node[block, below right=10ex and 10ex of RB3] (OB) {Output Block};
+
+	% Multiplication nodes
+	\node[times, below right=1ex and 2ex of RB1] (M1) {};
+	\node[times, below right=1ex and 2ex of RB2] (M2) {};
+	\node[times, below right=1ex and 2ex of RB3] (M3) {};
+	
+	% bits
+	\node[right=3ex of M1] (B1) {$b_1$};
+	\node[right=3ex of M2] (B2) {$b_{D-1}$};
+	\node[right=3ex of M3] (B3) {$b_D$};
+	
+	% Addition nodes
+    \node[plus] at (IB -| M1) (A1) {};
+    \node[plus] at (IB -| M2) (A2) {};
+    \node[plus] at (IB -| M3) (A3) {};
+	
+	% input
+	\node[left=5ex of IB] (X) {$\vec{x}$};
+	
+	% dot dot dot
+	\node[right=3ex of A1] (ddd) {...};
+	
+	% outputs
+	\node[below right=-1ex and 3ex of OB.north east] (YD) {$\vec{\hat y}_D$};
+	\node[right=3ex of OB] (YD1) {$\vec{\hat y}_{D-1}$};
+	\node[above right=-1ex and 3ex of OB.south east] (Y1) {$\vec{\hat y}_1$};
+
+	% connections
+	\draw[arrow] (X.east) -- (IB.west);
+	\draw[arrow] (IB.east) -- (A1);
+	
+	\draw[arrow] (RB1.east) -| (M1);
+	\draw[arrow] (B1) -- (M1);
+	\draw[arrow] (M1) -- (A1);
+	\draw[arrow] ([xshift=-19ex] A1.east) |- (RB1.west);
+	
+	\draw[line] (A1) -- (ddd);
+	\draw[arrow] (ddd) -- (A2);
+	
+	\draw[arrow] (RB2.east) -| (M2);
+	\draw[arrow] (B2) -- (M2);
+	\draw[arrow] (M2) -- (A2);
+	\draw[arrow] ([xshift=-19ex] A2.east) |- (RB2.west);
+	
+	\draw[arrow] (A2) -- (A3);
+	
+	\draw[arrow] (RB3.east) -| (M3);
+	\draw[arrow] (B3) -- (M3);
+	\draw[arrow] (M3) -- (A3);
+	\draw[arrow] ([xshift=-19ex] A3.east) |- (RB3.west);
+	
+	\draw[arrow, dashed] (A3) -- ([yshift=-0.5ex] OB.north west);
+	\draw[arrow, dashed] ([xshift=-29ex] A3.east) |- (OB.west);
+	\draw[arrow, dashed] ([xshift=-29ex] A2.east) |- ([yshift=0.5ex] OB.south west);
+	
+	\draw[arrow, dashed] ([yshift=-0.5ex] OB.north east) -- (YD);
+	\draw[arrow, dashed] (OB.east) -- (YD1);
+	\draw[arrow, dashed] ([yshift=0.5ex] OB.south east) -- (Y1);
+     
+\end{tikzpicture}
+
+\end{document}
